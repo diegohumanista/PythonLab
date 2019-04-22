@@ -33,7 +33,7 @@ class tateti:
         self.__celdas = [' ',' ',' ',' ',' ',' ',' ',' ',' ']
         self.__quienGano = ''
         self.__turno = ''
-    def partidaRapida(self, movidas): #Función de testeo
+    def partidaRapida(self, movidas): #FunciÃ³n de testeo
         for m in movidas:
             self.PonerFicha(m)
     def __calcularGanador(self):
