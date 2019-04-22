@@ -18,13 +18,15 @@ En teoría se le dará un otra_data con un objeto de red neuronal, y la funcionI
 Esta función devuelve el jugador que ganó, 0 o 1
 """
 
-import Tateti
+import tateti
+
 class Jugador:
     def __init__(self, esHumano = False, funcionIa = lambda a,b,c:[0]*9, otra_data = []):
         self.esHumano = esHumano
         self.funcionIa = funcionIa
         self.otra_data = otra_data #la data que sea necesaria para la IA
-    def hacer_jugada(self,tablero,equipo):
+        
+    def hacer_jugada(self, tablero, equipo):
         movimientos = [0] * 9
         if self.esHumano:
             movimiento = int(input("Elija dónde poner su ficha: "))
@@ -36,7 +38,8 @@ class Jugador:
         return movimientos
 
 def simular_partido_tateti(jugadores, mostrar = False, orden = 'XO'):
-    tablero = Tateti.tateti(orden)
+    cantMovimientos = 0
+    tablero = tateti.tateti(orden)
     turno = 0
     if mostrar: print(str(tablero)+"\n")
     while not tablero.hayGanador:
@@ -51,13 +54,15 @@ def simular_partido_tateti(jugadores, mostrar = False, orden = 'XO'):
             if tablero.getCeldas()[movimiento] == ' ':
                 turnoRealizado = True
         tablero.PonerFicha(movimiento)
+        cantMovimientos = cantMovimientos + 1
         if mostrar: print(str(tablero)+"\n")
         turno = 1-turno
     if mostrar: print("Ganó {}".format(tablero.quienGano))
-    return orden.index(tablero.quienGano)
+    return orden.find(tablero.quienGano), cantMovimientos
 
 """
 === Para probar que funciona: ===
+
 class supongamos_que_red_neuronal:
     def __init__(self,configuracion):
         self.configuracion = configuracion # los pesos y eso

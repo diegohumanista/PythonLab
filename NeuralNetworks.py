@@ -1,3 +1,5 @@
+import random
+
 # dummy function used for input neurons
 def DummyActivacion(aValue):
     return aValue
@@ -25,6 +27,8 @@ class Neuron:
     
 class NeuralNetwork:
     def __init__(self, inputCount, layersSizeList, outputCount, anActivationFunction):
+
+        self.__ActivationFunction = anActivationFunction
         
         # Tracking layers sizes
         self.__layersSize = []
@@ -66,7 +70,30 @@ class NeuralNetwork:
         self.layers = self.__layers
         self.axons = self.__axons
 
-   
+    def randomizeNeuralNetwork(self):
+        # No randomizamos las neuronas input, por eso arranca de 1
+        for layer in range(1, len(self.__layers)):
+            for neuron in self.__layers[layer]:
+                neuron.bias = random.randrange(-30, 31) * 0.1
+        for axonlayer in self.__axons:
+            for axonlist in axonlayer:
+                for i in range(len(axonlist)):
+                    axonlist[i] = random.randrange(-100, 101) * 0.01
+    
+    def deriveNeuralNetwork(self):
+        newNN = NeuralNetwork(len(self.__layers[0]), self.__layersSize[1:len(self.__layersSize)-1], self.__layersSize[-1], self.__ActivationFunction)
+        
+        
+        for layer in range(1, len(self.__layers)):
+            for neuron in range(len(self.__layers[layer])):
+                newNN.__layers[layer][neuron].bias = self.__layers[layer][neuron].bias + random.randrange(-1, 2) * 0.1
+        for axonlayer in range(len(self.__axons)):
+            for axonlist in range(len(self.__axons[axonlayer])):
+                for i in range(len(self.__axons[axonlayer][axonlist])):
+                    newNN.__axons[axonlayer][axonlist][i] = self.__axons[axonlayer][axonlist][i] + random.randrange(-1, 2) * 0.01
+        
+        return newNN
+
     def Calcular(self, inputValuesList):
         if len(inputValuesList) != self.__layersSize[0]:
             print('Error, se están queriendo introducir {0} parametros cuando la red tiene {1}'.format(len(inputValuesList), self.__layersSize[0]))
@@ -263,7 +290,8 @@ print(miRed.Calcular([1,2]))
 
 #print(miRed.toString())
 
-miRed2 = NeuralNetwork(1, [1,1,1,1], 1, Activacion)
+miRed2 = miRed.deriveNeuralNetwork()
+miRed2.randomizeNeuralNetwork()
 print(miRed2.toString())
 print('---------------------------')
 miRed2.fromString(miRed.toString())
