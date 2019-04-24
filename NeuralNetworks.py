@@ -1,8 +1,35 @@
 import random
+import numpy as np
 
 # dummy function used for input neurons
 def DummyActivacion(aValue):
     return aValue
+
+def IdentityActivation(aValue):
+    return aValue
+
+def BinaryStepActivation(aValue):
+    if aValue < 0:
+        return 0
+    else:
+        return 1
+
+def SigmoidActivation(aValue):
+    return 1 / (1 + np.exp(-aValue))
+
+def SeudoSigmoidActivation(aValue):
+    return aValue / (1 + np.abs(aValue))
+    
+def RareActivation(aValue):
+    if aValue < 0:
+        return aValue / 10
+    else:
+        return aValue
+
+
+def TanhActivation(aValue):
+    return np.tanh(aValue)
+
 
 NN_HEADER_STRING = 'Neural Network'
 
@@ -202,7 +229,7 @@ class NeuralNetwork:
                 initialized = True
                 print('Inicializando la red con ' + str(inputs) + ' entradas, ' + str(outputs) + ' salidas y ' + str(innerlayers) + ' capas intermedias ')
                 # Con los datos que ya tengo, inicializo a la red
-                self.__init__(inputs, innerlayerssizes, outputs, DummyActivacion)          
+                self.__init__(inputs, innerlayerssizes, outputs, self.__ActivationFunction)          
         
             if params[0] == 'Input Layer':
                 ActualLayer = 0
@@ -230,7 +257,7 @@ class NeuralNetwork:
             if params[0] == 'Bias':
                 ActualAxon = None
                 print('Setting bias for neuron ' + str(ActualNeuron) + ' in layer ' + str(ActualLayer) + ' to ' + params[1])
-                self.__layers[ActualLayer][ActualNeuron].bias = int(params[1])
+                self.__layers[ActualLayer][ActualNeuron].bias = float(params[1])
                 continue    
 
             if params[0] == 'Inputs':
