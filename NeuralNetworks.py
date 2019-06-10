@@ -99,13 +99,19 @@ class NeuralNetwork:
 
     def randomizeNeuralNetwork(self):
         # No randomizamos las neuronas input, por eso arranca de 1
+        '''
         for layer in range(1, len(self.__layers)):
             for neuron in self.__layers[layer]:
                 neuron.bias = random.randrange(-30, 31) * 0.1
-        for axonlayer in self.__axons:
-            for axonlist in axonlayer:
-                for i in range(len(axonlist)):
-                    axonlist[i] = random.randrange(-100, 101) * 0.01
+        '''
+
+
+        for x in range(len(self.__axons)):
+            for y in range(len(self.__axons[x])):
+                for z in range(len(self.__axons[x][y])):
+                    self.__axons[x][y][z] = random.randrange(-200, 201) * 0.01        
+        
+        
     
     def deriveNeuralNetwork(self):
         newNN = NeuralNetwork(len(self.__layers[0]), self.__layersSize[1:len(self.__layersSize)-1], self.__layersSize[-1], self.__ActivationFunction)
@@ -285,8 +291,8 @@ miNeurona = Neuron(-1, Activacion)
 miNeurona.setInputValuesSum(3)
 print(miNeurona.value)
 '''
-
 '''
+
 print('--------------Inicio--------------')
 miRed = NeuralNetwork(1, [2], 1, Activacion)
 print(miRed.Calcular([1]))
@@ -326,7 +332,7 @@ print(miRed2.toString())
 print('---------------------------')
 print(miRed2.Calcular([1,2]))
 
-'''
+#'''
 
 
 

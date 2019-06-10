@@ -5,18 +5,19 @@ Created on Mon Apr 22 01:49:04 2019
 @author: Diego
 """
 
-import NeuralNetworks
+import MatrixNeuralNetworks
 import Simulador_de_tateti
 import uuid
 import random
+import datetime
 
 def proxyIAfunc(self, tablero, equipo):
     return self.otra_data[0].procesar(tablero, equipo)
 
-class NNTateti(NeuralNetworks.NeuralNetwork):
+class NNTateti(MatrixNeuralNetworks.NeuralNetwork):
     def __init__(self):
         # Creo la red neuronal
-        super(NNTateti, self).__init__(18, [14, 12], 9, NeuralNetworks.SeudoSigmoidActivation)
+        super(NNTateti, self).__init__(18, [14, 12], 9, MatrixNeuralNetworks.SeudoSigmoidActivation)
         # Le asigno un ID para identificarla
         self.ID = uuid.uuid4().hex[:8]
         #print('Se creó una IA con ID = ' + self.__ID)
@@ -28,13 +29,15 @@ class NNTateti(NeuralNetworks.NeuralNetwork):
     def deriveNNTateti(self):
         newNN = NNTateti()
         
+        '''
         for layer in range(1, len(self.layers)):
             for neuron in range(len(self.layers[layer])):
                 newNN.layers[layer][neuron].bias = self.layers[layer][neuron].bias + random.randrange(-1, 2) * 0.2
+        '''
         for axonlayer in range(len(self.axons)):
             for axonlist in range(len(self.axons[axonlayer])):
                 for i in range(len(self.axons[axonlayer][axonlist])):
-                    newNN.axons[axonlayer][axonlist][i] = self.axons[axonlayer][axonlist][i] + random.randrange(-10, 11) * 0.01
+                    newNN.axons[axonlayer][axonlist][i] = self.axons[axonlayer][axonlist][i] + random.randrange(-10, 11) * 0.05
         newNN.edad = self.edad
         newNN.mutaciones = self.mutaciones + 1
         return newNN
@@ -56,24 +59,25 @@ class NNTateti(NeuralNetworks.NeuralNetwork):
         entrada = fichasAjenas
         
         salida = super(NNTateti, self).Calcular(entrada)
+        salidax = []
         
         # transformo la salida de una lista de posibilidades a una lista de tuplas
         # donde el primer valor es la posibilidad, y el segundo, la posición
         for i in range(len(salida)):
-            salida[i] = [salida[i], i]
+            salidax.append([salida[i], i])
         
         # Ahora ordeno las preferencias de mayor a menor
-        salida.sort(key=lambda x: x[0], reverse=True)
+        salidax.sort(key=lambda x: x[0], reverse=True)
         
         # Devuelve para el resultado solo casillas no ocupadas
         res = []
-        for respuesta in salida:
+        for respuesta in salidax:
             #f unTablero[respuesta[1]] == ' ':
                 res.append(respuesta[1])
         if len(res) == 0:
             print('ATENCION! La salida calculada es nula!')
             print('Tablero: ' + str(unTablero))
-            print('Salida: ' + str(salida))
+            print('Salida: ' + str(salidax))
             print('res: ' + str(res))
         return res
 
@@ -120,7 +124,9 @@ class tatetiArena:
             self.ListaNNs[i].derrotas = 0
             self.ListaNNs[i].empates = 0
             self.ListaNNs[i].edad = self.ListaNNs[i].edad + 1
-            
+        
+        start = datetime.datetime.now()        
+        
         # Todas las IAs se enfrentan con todas
         for i in range(len(self.ListaNNs)):
             #print('Ronda ' + str(i) + ' de ' + str(len(self.ListaNNs)))
@@ -154,6 +160,10 @@ class tatetiArena:
                         self.ListaNNs[i].empates = self.ListaNNs[i].empates + 1
                         self.ListaNNs[j].empates = self.ListaNNs[j].empates + 1
                         
+        end = datetime.datetime.now()
+        elapsed = end - start
+        print('La ronda tomó: ', elapsed) 
+        
         
         # Luego de enfrentadas todas, ordenamos según puntaje
         self.ListaNNs.sort(key=lambda x: x.puntaje, reverse=True)
